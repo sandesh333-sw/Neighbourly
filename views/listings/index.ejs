@@ -1,0 +1,40 @@
+<%- include('../partials/header') %>
+
+<!-- Link to your CSS file -->
+<link rel="stylesheet" href="/custom.css">
+
+<!-- Listings Options Section -->
+<div class="container my-5">
+    <h2 class="text-center mb-5">Browse Listings</h2>
+    <div class="row g-4">
+        <!-- Legal Rental Listings -->
+        <div class="col-md-6">
+            <div class="card h-100 shadow hover-effect">
+                <div class="card-body text-center">
+                    <div class="icon-box">
+                        <i class="fas fa-home fa-2x"></i> <!-- Example icon -->
+                    </div>
+                    <h5 class="card-title">Legal Rental Listings</h5>
+                    <p class="card-text">Find verified and legally compliant rental properties.</p>
+                    <a href="/listings/legal" class="btn btn-primary">View Legal Listings</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Undocumented Room Sharing Listings -->
+        <div class="col-md-6">
+            <div class="card h-100 shadow hover-effect">
+                <div class="card-body text-center">
+                    <div class="icon-box">
+                        <i class="fas fa-users fa-2x"></i> <!-- Example icon -->
+                    </div>
+                    <h5 class="card-title">Undocumented Room Sharing</h5>
+                    <p class="card-text">Explore shared living spaces with flexible arrangements.</p>
+                    <a href="/listings/room-sharing" class="btn btn-primary">View Room Sharing</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>
