@@ -3,21 +3,32 @@ const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
-const Listing = require('./models/Listing'); // Add listing model
+const legalListing = require('./models/legalListing.js');
+const shareListing = require('./models/shareListing.js');  // Corrected this line
+const path = require('path');
 
 // Initialize app
 const app = express();
 
 // Connect to DB
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
+const dbUrl = process.env.MONGODB_URI;
+
+main().then(() => {
+    console.log("Connected to DB");
+}).catch(err => {
+    console.log(err);
 });
 
+async function main(){
+  await mongoose.connect(dbUrl);
+}
+
 // Middleware
-app.use(express.static('public')); // Changed to standard public directory
+app.use(express.static('views/public')); 
 app.use(express.urlencoded({ extended: true }));
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+ 
 
 // Session configuration
 app.use(session({
@@ -31,23 +42,48 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Routes
-app.get('/', (req, res) => {
-  res.render('index');
+app.get("/", (req, res) => {
+  res.render("index");
 });
 
-//get listing
-app.get('/listings', async (req, res) => {
-  try {
-    const legalListings = await Listing.find({ verified: true }).exec();
-    res.render('listings', { legalListings });
-  } catch (err) {
-    console.error('Error fetching listings:', err);
-    res.status(500).send('Server Error');
+// Listing routes
+app.get("/listings", (req, res) => {
+  res.render("listings/index");
+});
+
+// Legal Listings
+app.get("/listings/legal", async(req, res) => {
+  const allListings = await legalListing.find({});
+  res.render("listings/legal", { allListings });
+});
+
+// Room Sharing Listings
+app.get("/listings/room-sharing", async(req, res) => {
+  const allListings = await shareListing.find({});
+  res.render("listings/room-sharing", { allListings });
+});
+
+// Legal Listing Details
+app.get("/listings/legal/:id", async (req, res) => {
+  const { id } = req.params;
+  const listing = await legalListing.findById(id);
+  if (!listing) {
+    return res.status(404).send("Legal listing not found");
   }
+  res.render("listings/showL", { listing });
+});
+
+// Room Sharing Listing Details
+app.get("/listings/room-sharing/:id", async (req, res) => {
+  const { id } = req.params;
+  const listing = await shareListing.findById(id);
+  if (!listing) {
+    return res.status(404).send("Room-sharing listing not found");
+  }
+  res.render("listings/showS", { listing }); // Ensure this view exists
 });
 
 // Start server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(8080, () => {
+  console.log("Server is listening on port 8080");
 });

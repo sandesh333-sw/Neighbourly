@@ -1,40 +1,80 @@
-<%- include('../partials/header') %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neighborly - Community-Powered Rentals</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
 
-<!-- Link to your CSS file -->
-<link rel="stylesheet" href="/custom.css">
+</head>
+<body>
+    <header>
+        <%- include('../partials/header') %>
+    </header>
 
-<!-- Listings Options Section -->
-<div class="container my-5">
-    <h2 class="text-center mb-5">Browse Listings</h2>
-    <div class="row g-4">
-        <!-- Legal Rental Listings -->
-        <div class="col-md-6">
-            <div class="card h-100 shadow hover-effect">
-                <div class="card-body text-center">
-                    <div class="icon-box">
-                        <i class="fas fa-home fa-2x"></i> <!-- Example icon -->
+    <!-- Main Content -->
+    <div class="container my-5">
+        <h2 class="text-center mb-5">Browse Listings</h2>
+        <div class="row g-4">
+            <!-- Legal Rental Listings -->
+            <div class="col-md-6 responsive-height">
+                <div class="card h-100 shadow hover-effect">
+                    <div class="card-body text-center">
+                        <div class="icon-box">
+                            <i class="fas fa-home fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Legal Rental Listings</h5>
+                        <p class="card-text">Find verified and legally compliant rental properties.</p>
+                        <div class="text-start mx-3 mb-3">
+                            <ul class="list-unstyled">
+                                <li class="mb-2">✔️ Full legal protections for tenants</li>
+                                <li class="mb-2">✔️ Verified property ownership</li>
+                                <li class="mb-2">✔️ Compliance with safety regulations</li>
+                                <li class="mb-2">✔️ Clear rental contracts</li>
+                                <li class="mb-2">✔️ Access to tenant rights resources</li>
+                                <li class="mb-2">✔️ Regular maintenance guarantees</li>
+                            </ul>
+                        </div>
+                        <a href="/listings/legal" class="btn btn-primary">View Legal Listings</a>
                     </div>
-                    <h5 class="card-title">Legal Rental Listings</h5>
-                    <p class="card-text">Find verified and legally compliant rental properties.</p>
-                    <a href="/listings/legal" class="btn btn-primary">View Legal Listings</a>
                 </div>
             </div>
-        </div>
 
-        <!-- Undocumented Room Sharing Listings -->
-        <div class="col-md-6">
-            <div class="card h-100 shadow hover-effect">
-                <div class="card-body text-center">
-                    <div class="icon-box">
-                        <i class="fas fa-users fa-2x"></i> <!-- Example icon -->
+            <!-- Undocumented Room Sharing Listings -->
+            <div class="col-md-6 responsive-height">
+                <div class="card h-100 shadow hover-effect">
+                    <div class="card-body text-center">
+                        <div class="icon-box">
+                            <i class="fas fa-users fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Undocumented Room Sharing</h5>
+                        <p class="card-text">Explore shared living spaces with flexible arrangements.</p>
+                        <div class="text-start mx-3 mb-3">
+                            <ul class="list-unstyled">
+                                <li class="mb-2">✔️ Affordable short-term options</li>
+                                <li class="mb-2">✔️ Flexible move-in/out dates</li>
+                                <li class="mb-2">✔️ Lower security deposits</li>
+                                <li class="mb-2">✔️ Shared utility costs</li>
+                                <li class="mb-2">✔️ Community living experience</li>
+                                <li class="mb-2">✔️ Quick approval process</li>
+                            </ul>
+                        </div>
+                        <a href="/listings/room-sharing" class="btn btn-primary">View Room Sharing</a>
                     </div>
-                    <h5 class="card-title">Undocumented Room Sharing</h5>
-                    <p class="card-text">Explore shared living spaces with flexible arrangements.</p>
-                    <a href="/listings/room-sharing" class="btn btn-primary">View Room Sharing</a>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<%- include('../partials/footer') %>
+    <footer>
+        <%- include('../partials/footer') %>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
