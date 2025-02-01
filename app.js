@@ -103,6 +103,32 @@ app.post("/listings/room-sharing/new", async (req, res) => {
   }
 });
 
+//Edit listings
+
+
+app.get("/listings/legal/:id/edit", async(req, res) => {
+  let { id } = req.params;
+  const listing = await legalListing.findById(id);
+  res.render("listings/editL", { listing });
+});
+
+app.put("/listings/legal/:id", async(req, res) => {
+  let { id } = req.params;
+  let listing = await legalListing.findByIdAndUpdate(id, {...req.body.listing}, { new: true });
+  res.redirect(`/listings/legal/${id}`);
+});
+//sharing
+app.get("/listings/room-sharing/:id/edit", async(req, res) => {
+  let { id } = req.params;
+  const listing = await shareListing.findById(id);
+  res.render("listings/editS", { listing });
+});
+
+app.put("/listings/room-sharing/:id", async(req, res) => {
+  let { id } = req.params;
+  let listing = await shareListing.findByIdAndUpdate(id, {...req.body.listing}, { new: true });
+  res.redirect(`/listings/room-sharing/${id}`);
+});
 
 // Legal Listing Details
 app.get("/listings/legal/:id", async (req, res) => {
