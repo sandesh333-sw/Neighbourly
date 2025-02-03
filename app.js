@@ -2,13 +2,13 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
-const passport = require('passport');
 const legalListing = require('./models/legalListing.js');
 const shareListing = require('./models/shareListing.js');
 const path = require('path');
 const methodOverride = require('method-override');
 const { listingSchema } = require("./schema.js");
 const ExpressError = require("./utils/expressError.js");
+const flash = require('connect-flash');
 
 
 const app = express();
@@ -33,16 +33,24 @@ app.use(methodOverride('_method'));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Session Configuration
-app.use(session({
-    secret: process.env.SESSION_SECRET,
+const sessionOptions = {
+    secret: "dfadsfd34",
     resave: false,
-    saveUninitialized: false
-}));
+    saveUninitialized: true,
+    cookie: {
+        expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+    },
+};
 
-// Passport setup
-app.use(passport.initialize());
-app.use(passport.session());
+// Session Configuration
+app.use(session(sessionOptions));
+app.use(flash());
+ 
+app.use((req, res, next) => {
+    res.locals.success = req.flash("success");
+    next();
+})
 
 // Routes
 app.get("/", (req, res) => {
@@ -78,6 +86,7 @@ app.post("/listings/legal/new", async (req, res) => {
         }
         const newListing = new legalListing(req.body.listing);
         await newListing.save();
+        req.flash("success", "New Listing Created");
         res.redirect("/listings/legal");
     } catch (error) {
         console.error(error);
@@ -98,6 +107,7 @@ app.post("/listings/room-sharing/new", async (req, res) => {
         }
         const newListing = new shareListing(req.body.listing);
         await newListing.save();
+        req.flash("success", "New Listing Created");
         res.redirect("/listings/room-sharing");
     } catch (error) {
         console.error(error);
@@ -121,6 +131,7 @@ app.put("/listings/legal/:id", async (req, res) => {
     if (!updatedListing) {
         return res.status(404).send("Listing not found");
     }
+    req.flash("success", "Listing Edited");
     res.redirect(`/listings/legal/${id}`);
 });
 
@@ -140,6 +151,7 @@ app.put("/listings/room-sharing/:id", async (req, res) => {
     if (!updatedListing) {
         return res.status(404).send("Listing not found");
     }
+    req.flash("success", "Listing Edited");
     res.redirect(`/listings/room-sharing/${id}`);
 });
 
@@ -170,6 +182,7 @@ app.delete("/listings/legal/:id", async (req, res) => {
         if (!deletedListing) {
             return res.status(404).send("Listing not found");
         }
+        req.flash("success", " Listing Deleted");
         res.redirect("/listings/legal");
     } catch (error) {
         console.error(error);
@@ -184,6 +197,7 @@ app.delete("/listings/room-sharing/:id", async (req, res) => {
         if (!deletedListing) {
             return res.status(404).send("Listing not found");
         }
+        req.flash("success", " Listing Deleted");
         res.redirect("/listings/room-sharing");
     } catch (error) {
         console.error(error);
