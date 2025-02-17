@@ -34,7 +34,7 @@
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             <% for(let listing of allListings) { %>
                 <div class="col">
-                    <a href="/listings/legal/<%= listing.id %>" class="text-decoration-none text-reset">
+                    <a href="/listings/legal/<%= listing._id %>" class="text-decoration-none text-reset">
                     <div class="card h-100 shadow-sm hover-shadow-lg transition-all duration-200">
                         <!-- Card Image -->
                         <img 
@@ -42,6 +42,7 @@
                             class="card-img-top img-fluid" 
                             alt="<%= listing.title %>" 
                             style="height: 250px; object-fit: cover;"
+                            onerror="this.src='/images/default-listing.jpg'"
                         >
                         
                         <!-- Card Body -->
@@ -57,7 +58,7 @@
                                 <%= listing.location %>
                             </p>
     
-                            <!-- Price Section - Made more prominent -->
+                            <!-- Price Section -->
                             <div class="d-flex justify-content-between align-items-center mb-3 bg-light rounded-pill px-3 py-2">
                                 <div class="d-flex align-items-baseline">
                                     <span class="text-muted fs-6 me-1">£</span>
@@ -65,7 +66,7 @@
                                         <%= listing.price.toLocaleString() %>
                                     </p>
                                 </div>
-                                <small class="text-muted fw-medium">/ night</small>
+                                <small class="text-muted fw-medium">/ month</small>
                             </div>
     
                             <!-- Description -->
@@ -73,10 +74,16 @@
                                 <%= listing.description %>
                             </p>
     
-                            <!-- Post Date -->
-                            <div class="mt-auto small text-muted">
-                                <i class="bi bi-clock-history me-2"></i>
-                                Posted <%= listing.postDate.toLocaleDateString() %>
+                            <!-- Owner and Date -->
+                            <div class="mt-auto d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="bi bi-person-circle me-2"></i>
+                                    <%= listing.owner ? listing.owner.username : 'Unknown User' %>
+                                </small>
+                                <small class="text-muted">
+                                    <i class="bi bi-clock-history me-2"></i>
+                                    <%= listing.createdAt ? new Date(listing.createdAt).toLocaleDateString() : 'Unknown date' %>
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -84,6 +91,12 @@
                 </div>
             <% } %>
         </div>
+
+        <% if(currentUser) { %>
+            <div class="text-center mt-4">
+                <a href="/listings/legal/new" class="btn btn-primary btn-lg">Create New Listing</a>
+            </div>
+        <% } %>
     </main>
     
     <footer>
