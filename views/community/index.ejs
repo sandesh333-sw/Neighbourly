@@ -1,0 +1,25 @@
+<%- include('../partials/header') %>
+
+<div class="container mt-4">
+    <h1>Communities</h1>
+    <a href="/community/new" class="btn btn-primary mb-3">Create New Community</a>
+    
+    <div class="row">
+        <% for(let community of communities) { %>
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <% if(community.image) { %>
+                        <img src="<%= community.image %>" class="card-img-top" alt="<%= community.name %>">
+                    <% } %>
+                    <div class="card-body">
+                        <h5 class="card-title"><%= community.name %></h5>
+                        <p class="card-text"><%= community.description %></p>
+                        <a href="/community/<%= community._id %>" class="btn btn-info">View Community</a>
+                    </div>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('../partials/footer') %> 

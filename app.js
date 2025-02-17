@@ -9,7 +9,18 @@ const methodOverride = require('method-override');
 const { listingSchema } = require("./schema.js");
 const ExpressError = require("./utils/expressError.js");
 const flash = require('connect-flash');
+const Community = require('./models/community.js');
+const Post = require('./models/post.js');
+const Comment = require('./models/comment.js');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const User = require('./models/user');
 
+
+
+// Route imports
+const userRoutes = require('./routes/users');
+const communityRoutes = require('./routes/communities');
 
 const app = express();
 
@@ -48,9 +59,18 @@ app.use(session(sessionOptions));
 app.use(flash());
  
 app.use((req, res, next) => {
-    res.locals.success = req.flash("success");
+    res.locals.currentUser = req.user;
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
     next();
 })
+
+// Passport configuration
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 // Routes
 app.get("/", (req, res) => {
@@ -204,6 +224,85 @@ app.delete("/listings/room-sharing/:id", async (req, res) => {
         res.status(500).send("Error deleting listing");
     }
 });
+
+// Community Routes
+app.get("/community", async (req, res) => {
+    const communities = await Community.find({}).populate('owner');
+    res.render("community/index", { communities });
+});
+
+app.get("/community/new", (req, res) => {
+    res.render("community/new");
+});
+
+app.post("/community/new", async (req, res) => {
+    try {
+        const community = new Community(req.body.community);
+        // TODO: Set owner from authenticated user
+        await community.save();
+        req.flash("success", "New Community Created");
+        res.redirect(`/community/${community._id}`);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error creating community");
+    }
+});
+
+app.get("/community/:id", async (req, res) => {
+    const { id } = req.params;
+    const community = await Community.findById(id)
+        .populate('owner')
+        .populate({
+            path: 'posts',
+            populate: {
+                path: 'author comments',
+                populate: {
+                    path: 'author'
+                }
+            }
+        });
+    res.render("community/show", { community });
+});
+
+// Post Routes
+app.post("/community/:id/posts", async (req, res) => {
+    const { id } = req.params;
+    const community = await Community.findById(id);
+    const post = new Post(req.body.post);
+    // TODO: Set author from authenticated user
+    community.posts.push(post);
+    await post.save();
+    await community.save();
+    req.flash("success", "New Post Created");
+    res.redirect(`/community/${id}`);
+});
+
+// Comment Routes
+app.post("/community/:id/posts/:postId/comments", async (req, res) => {
+    const { id, postId } = req.params;
+    const post = await Post.findById(postId);
+    const comment = new Comment(req.body.comment);
+    // TODO: Set author from authenticated user
+    post.comments.push(comment);
+    await comment.save();
+    await post.save();
+    req.flash("success", "New Comment Added");
+    res.redirect(`/community/${id}`);
+});
+
+// Like/Unlike Post
+app.post("/community/:id/posts/:postId/like", async (req, res) => {
+    const { postId } = req.params;
+    const post = await Post.findById(postId);
+    // TODO: Toggle like based on authenticated user
+    post.likes += 1;
+    await post.save();
+    res.json({ likes: post.likes });
+});
+
+// Routes
+app.use('/', userRoutes);
+app.use('/community', communityRoutes);
 
 //Errors
 app.all("*", (req, res, next) => {

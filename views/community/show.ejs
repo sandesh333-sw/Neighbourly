@@ -1,0 +1,80 @@
+<%- include('../partials/header') %>
+
+<div class="container mt-4">
+    <h1><%= community.name %></h1>
+    <p><%= community.description %></p>
+    
+    <!-- New Post Form -->
+    <form action="/community/<%= community._id %>/posts" method="POST" class="mb-4">
+        <div class="form-group">
+            <textarea name="post[content]" class="form-control" rows="3" placeholder="Write a post..."></textarea>
+        </div>
+        <button class="btn btn-primary mt-2">Post</button>
+    </form>
+    
+    <!-- Posts -->
+    <div class="posts">
+        <% for(let post of community.posts) { %>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        <%= post.author ? post.author.username || 'Anonymous' : 'Anonymous' %> • 
+                        <%= post.createdAt ? post.createdAt.toLocaleDateString() : 'Just now' %>
+                    </h6>
+                    <p class="card-text"><%= post.content %></p>
+                    
+                    <!-- Like Button -->
+                    <button class="btn btn-sm btn-outline-primary like-btn" 
+                            data-post-id="<%= post._id %>">
+                        ❤️ <%= post.likes || 0 %>
+                    </button>
+                    
+                    <!-- Comments -->
+                    <div class="comments mt-3">
+                        <% if(post.comments && post.comments.length > 0) { %>
+                            <% for(let comment of post.comments) { %>
+                                <div class="comment">
+                                    <small>
+                                        <strong><%= comment.author ? comment.author.username || 'Anonymous' : 'Anonymous' %>:</strong>
+                                        <%= comment.content %>
+                                    </small>
+                                </div>
+                            <% } %>
+                        <% } %>
+                        
+                        <!-- New Comment Form -->
+                        <form action="/community/<%= community._id %>/posts/<%= post._id %>/comments" 
+                              method="POST" class="mt-2">
+                            <div class="input-group">
+                                <input type="text" name="comment[content]" 
+                                       class="form-control form-control-sm" 
+                                       placeholder="Add a comment...">
+                                <button class="btn btn-sm btn-outline-secondary">Comment</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<!-- Add this JavaScript for like functionality -->
+<script>
+    document.querySelectorAll('.like-btn').forEach(button => {
+        button.addEventListener('click', async () => {
+            const postId = button.dataset.postId;
+            try {
+                const response = await fetch(`/community/<%= community._id %>/posts/${postId}/like`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                button.innerHTML = `❤️ ${data.likes}`;
+            } catch (error) {
+                console.error('Error liking post:', error);
+            }
+        });
+    });
+</script>
+
+<%- include('../partials/footer') %> 
