@@ -17,7 +17,7 @@ const register = async (req, res, next) => {
         });
     } catch (e) {
         req.flash('error', e.message);
-        res.redirect('/register');
+        res.redirect('register');
     }
 };
 
@@ -34,7 +34,9 @@ const login = (req, res) => {
 
 const logout = (req, res, next) => {
     req.logout(function(err) {
-        if (err) return next(err);
+        if (err) {
+            return next(err);
+        }
         req.flash('success', 'Goodbye!');
         res.redirect('/');
     });

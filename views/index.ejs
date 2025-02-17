@@ -21,7 +21,112 @@
         <%- include('partials/header') %>
     </header>
 
-    <%- include('partials/body') %>
+    <main>
+        <!-- Hero Section -->
+        <section class="hero bg-light py-5">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <h1 class="display-4 fw-bold mb-4">Find Your Perfect Home</h1>
+                        <p class="lead mb-4">Discover rooms and properties for rent in your area. Connect with trusted landlords and find your ideal living space.</p>
+                        <div class="d-flex gap-3">
+                            <% if(!currentUser) { %>
+                                <a href="/register" class="btn btn-primary btn-lg">Get Started</a>
+                                <a href="/login" class="btn btn-outline-secondary btn-lg">Login</a>
+                            <% } else { %>
+                                <a href="/listings/legal" class="btn btn-primary btn-lg">Browse Listings</a>
+                                <a href="/listings/legal/new" class="btn btn-outline-primary btn-lg">Create Listing</a>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="py-5">
+            <div class="container">
+                <h2 class="text-center mb-5">Why Choose Neighborly?</h2>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <i class="fa-regular fa-user fs-1 mb-3 text-primary"></i>
+                                <h3 class="h5 card-title">Find Perfect Matches</h3>
+                                <p class="card-text text-muted">Browse through verified listings and find your ideal living space.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <i class="bi bi-people fs-1 text-primary mb-3"></i>
+                                <h3 class="h5 card-title">Community First</h3>
+                                <p class="card-text text-muted">Connect with trusted landlords and potential roommates.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <i class="bi bi-shield-check fs-1 text-primary mb-3"></i>
+                                <h3 class="h5 card-title">Safe & Secure</h3>
+                                <p class="card-text text-muted">All listings are verified for your peace of mind.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Latest Listings Section -->
+        <section class="bg-light py-5">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0">Latest Listings</h2>
+                    <a href="/listings/legal" class="btn btn-outline-primary">View All</a>
+                </div>
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    <!-- Add your latest listings here -->
+                    <% if(typeof recentListings !== 'undefined' && recentListings.length > 0) { %>
+                        <% for(let listing of recentListings.slice(0, 3)) { %>
+                            <div class="col">
+                                <div class="card h-100 shadow-sm hover-shadow-lg transition-all duration-200">
+                                    <img src="<%= listing.imageUrl %>" 
+                                         class="card-img-top" 
+                                         alt="<%= listing.title %>"
+                                         style="height: 200px; object-fit: cover;">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><%= listing.title %></h5>
+                                        <p class="card-text text-truncate-3"><%= listing.description %></p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="h5 mb-0">£<%= listing.price.toLocaleString() %></span>
+                                            <a href="/listings/legal/<%= listing._id %>" class="btn btn-outline-primary btn-sm">View Details</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } %>
+                    <% } %>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-5">
+            <div class="container">
+                <div class="text-center">
+                    <h2 class="mb-4">Ready to Find Your New Home?</h2>
+                    <p class="lead mb-4">Join our community today and start exploring available properties.</p>
+                    <% if(!currentUser) { %>
+                        <a href="/register" class="btn btn-primary btn-lg">Get Started Now</a>
+                    <% } else { %>
+                        <a href="/listings/legal" class="btn btn-primary btn-lg">Browse Listings</a>
+                    <% } %>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <%- include('partials/footer') %>
 
