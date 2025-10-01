@@ -44,7 +44,11 @@
                             <div class="d-flex align-items-baseline">
                                 <span class="text-muted fs-6 me-1">£</span>
                                 <p class="h4 m-0 fw-bold text-dark">
-                                    <%= listing.price.toLocaleString() %>
+                                    <% if(listing.price) { %>
+                                        <%= listing.price.toLocaleString() %>
+                                    <% } else { %>
+                                        N/A
+                                    <% } %>
                                 </p>
                             </div>
                             <small class="text-muted fw-medium">/ night</small>

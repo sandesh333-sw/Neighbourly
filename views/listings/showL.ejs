@@ -33,7 +33,13 @@
                             </p>
                             <div class="bg-light rounded-pill px-3 py-2">
                                 <span class="text-muted fs-6 me-1">£</span>
-                                <span class="h4 m-0 fw-bold text-dark"><%= listing.price.toLocaleString() %></span>
+                                <span class="h4 m-0 fw-bold text-dark">
+                                    <% if(listing.price) { %>
+                                        <%= listing.price.toLocaleString() %>
+                                    <% } else { %>
+                                        N/A
+                                    <% } %>
+                                </span>
                                 <small class="text-muted fw-medium">/ month</small>
                             </div>
                         </div>

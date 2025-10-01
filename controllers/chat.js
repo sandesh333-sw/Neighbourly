@@ -17,6 +17,14 @@ module.exports.renderChat = async (req, res) => {
 module.exports.sendMessage = async (req, res) => {
     try {
         const { message } = req.body;
+        
+        // Check if API key is configured
+        if (!DEEPSEEK_API_KEY) {
+            return res.status(503).json({ 
+                error: 'Chat feature is currently unavailable. Please configure DEEPSEEK_API_KEY.' 
+            });
+        }
+        
         let chat = await Chat.findOne({ user: req.user._id });
         
         if (!chat) {

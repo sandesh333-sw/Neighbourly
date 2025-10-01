@@ -1,10 +1,10 @@
 require('dotenv').config();
 
 // Add this check after dotenv config
-if (!process.env.DEEPSEEK_API_KEY) {
-    console.error("ERROR: DEEPSEEK_API_KEY is not set in environment variables");
-    process.exit(1);
-}
+// if (!process.env.DEEPSEEK_API_KEY) {
+//     console.error("ERROR: DEEPSEEK_API_KEY is not set in environment variables");
+//     process.exit(1);
+// }
 
 const express = require('express');
 const mongoose = require('mongoose');
@@ -52,12 +52,14 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 const sessionOptions = {
-    secret: "dfadsfd34",
+    secret: process.env.SESSION_SECRET || "dfadsfd34",
     resave: false,
     saveUninitialized: true,
     cookie: {
         expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
         maxAge: 7 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production'
     },
 };
 
@@ -323,6 +325,15 @@ app.post("/community/:id/posts/:postId/like", async (req, res) => {
     res.json({ likes: post.likes });
 });
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+    res.status(200).json({ 
+        status: 'OK', 
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime()
+    });
+});
+
 // Routes
 app.use('/', userRoutes);
 app.use('/community', communityRoutes);
@@ -340,11 +351,13 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-app.listen(8080, () => {
-    console.log("Server is listening on port 8080");
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+    console.log("✓ Server is listening on port " + PORT);
+    console.log("✓ Connected to database");
+    console.log("✓ Environment: " + (process.env.NODE_ENV || 'development'));
+    if (!process.env.DEEPSEEK_API_KEY) {
+        console.log("⚠ Chat feature disabled (DEEPSEEK_API_KEY not set)");
+    }
+    console.log("\n→ Visit http://localhost:" + PORT);
 });
-
-const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
-};
